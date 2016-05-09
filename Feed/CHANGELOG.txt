@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.0.01
+-------
+Improved performance in loading multiple files
+
 v1.0.00
 -------
 Ability to view feeds in dashboard

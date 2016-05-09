@@ -27,6 +27,10 @@ include '../../config.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
+//CURL MULTI
+require_once './src/Library/RollingCurl/RollingCurl.php';
+require_once './src/Library/RollingCurl/Request.php';
+
 $output = '';
 
 $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -36,7 +40,6 @@ if (isset($_GET['gibbonPersonID'])) {
     $gibbonPersonID = $_GET['gibbonPersonID'] ;
 }
 
-
 if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
     echo "<div class='error'>";
     echo __($guid, 'You have not specified one or more required parameters.');
@@ -45,13 +48,18 @@ if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
 else {
     $feeds = array();
     $feedCount = 0;
-    $studentNames = array() ;
-    $studentNamesCount = 0 ;
+    $names = array() ;
+    $namesCount = 0 ;
     if ($category == "Staff") {
         //My own site
         if ($_SESSION[$guid]['website'] != '') {
-            $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
-            $feedCount ++ ;
+            if ($_SESSION[$guid]['website']!='') {
+                $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
+                $feedCount ++ ;
+                $names[$namesCount][0] = $_SESSION[$guid]['website'] ;
+                $names[$namesCount][1] = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student', false) ;
+                $namesCount ++ ;
+            }
         }
         //Student sites from my class(es)
         try {
@@ -61,24 +69,25 @@ else {
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
                     JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)
-                    AND gibbonPerson.status='Full'
-                ";
+                    AND gibbonPerson.status='Full'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
         }
         while ($row=$result->fetch()) {
-            $feeds[$feedCount] = $row['website'] . '?feed=rss2' ;
-            $feedCount ++ ;
-            $studentNames[$studentNamesCount][0] = $row['website'] ;
-            $studentNames[$studentNamesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
-            $studentNamesCount ++ ;
+            if ($row['website']!='') {
+                $feeds[$feedCount] = $row['website'] . '?feed=rss2' ;
+                $feedCount ++ ;
+                $names[$namesCount][0] = $row['website'] ;
+                $names[$namesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
+                $namesCount ++ ;
+            }
         }
 
         //Class sites from my class(es)
         try {
             $data = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT gibbonRollGroup.website
+            $sql = "SELECT gibbonRollGroup.website, gibbonRollGroup.name
                 FROM gibbonRollGroup
                 WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)
                     AND gibbonRollGroup.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
@@ -87,14 +96,24 @@ else {
             $result->execute($data);
         } catch (PDOException $e) { print $e->getMessage() ; }
         while ($row=$result->fetch()) {
-            $feeds[$feedCount] = $row['website'] . '?feed=rss2' ;
-            $feedCount ++ ;
+            if ($row['website']!='') {
+                $feeds[$feedCount] = $row['website'] . '?feed=rss2' ;
+                $feedCount ++ ;
+                $names[$namesCount][0] = $row['website'] ;
+                $names[$namesCount][1] = $row['name'] ;
+                $namesCount ++ ;
+            }
         }
     } else if ($category == "Student") {
         //My own site
         if ($_SESSION[$guid]['website'] != '') {
-            $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
-            $feedCount ++ ;
+            if ($_SESSION[$guid]['website']!='') {
+                $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
+                $feedCount ++ ;
+                $names[$namesCount][0] = $_SESSION[$guid]['website'] ;
+                $names[$namesCount][1] = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student', false) ;
+                $namesCount ++ ;
+            }
         }
     } else if ($category == "Parent") {
         try {
@@ -118,16 +137,20 @@ else {
         if ($result->rowCount() == 1) {
             $row=$result->fetch() ;
             if ($row['websitePersonal'] != '') {
-                $feeds[$feedCount] = $row['websitePersonal'] . '?feed=rss2' ;
-                $feedCount ++ ;
+                if ($row['websitePersonal']!='') {
+                    $feeds[$feedCount] = $row['websitePersonal'] . '?feed=rss2' ;
+                    $feedCount ++ ;
+                }
             }
             if ($row['websiteClass'] != '') {
-                $feeds[$feedCount] = $row['websiteClass'] . '?feed=rss2' ;
-                $feedCount ++ ;
+                if ($row['websiteClass']!='') {
+                    $feeds[$feedCount] = $row['websiteClass'] . '?feed=rss2' ;
+                    $feedCount ++ ;
+                }
             }
-            $studentNames[$studentNamesCount][0] = $row['websitePersonal'] ;
-            $studentNames[$studentNamesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
-            $studentNamesCount ++ ;
+            $names[$namesCount][0] = $row['websitePersonal'] ;
+            $names[$namesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
+            $namesCount ++ ;
         }
     }
 
@@ -138,14 +161,33 @@ else {
     }
     else {
         $entries = array();
+
+        //DO THE MULTI STUFF
+        $rollingCurl = new \RollingCurl\RollingCurl();
         foreach ($feeds as $feed) {
-            $xml = simplexml_load_file($feed);
-            $entries = array_merge($entries, $xml->xpath('/rss//item'));
+            $rollingCurl->get($feed);
+        }
+        $entries = array();
+        $start = microtime(true);
+        $rollingCurl->setSimultaneousLimit(30)->execute();
+        $rollingCurlCount = 0;
+        foreach ($rollingCurl->getCompletedRequests() as $request) {
+            $rss = new DOMDocument();
+            $rss->loadXML($request->getResponseText());
+            foreach ($rss->getElementsByTagName('item') as $node) {
+                $entries[$rollingCurlCount]['title'] = $node->getElementsByTagName('title')->item(0)->nodeValue ;
+                $entries[$rollingCurlCount]['pubDate'] = $node->getElementsByTagName('pubDate')->item(0)->nodeValue ;
+                $entries[$rollingCurlCount]['description'] = $node->getElementsByTagName('description')->item(0)->nodeValue ;
+                $entries[$rollingCurlCount]['link'] = $node->getElementsByTagName('link')->item(0)->nodeValue ;
+                $entries[$rollingCurlCount]['comments'] = $node->getElementsByTagName('comments')->item(0)->nodeValue ;
+
+                $rollingCurlCount ++;
+            }
         }
 
         // Sort feed entries by pubDate (ascending)
         usort($entries, function ($x, $y) {
-            return  strtotime($y->pubDate) - strtotime($x->pubDate);
+            return  strtotime($y['pubDate']) - strtotime($x['pubDate']);
         });
 
         $entries=array_slice($entries, 0, 20) ;
@@ -158,18 +200,18 @@ else {
         else {
         $count = 0;
             foreach ($entries as $item) {
-                $output .= "<h2 class='bigTop'>" . $item->title . "</h2>" ;
+                $output .= "<h2 class='bigTop'>" . $item['title'] . "</h2>" ;
                 $output .= "<p>" ;
-                    $output .= '<span class=\'small emphasis\'>' . substr($item->pubDate, 0, 17) ;
-                    foreach ($studentNames as $studentName) {
-                        if (strpos($item->link, $studentName[0]) !== false) {
+                    $output .= '<span class=\'small emphasis\'>' . substr($item['pubDate'], 0, 17) ;
+                    foreach ($names as $studentName) {
+                        if (strpos($item['link'], $studentName[0]) !== false) {
                             $output .=  " | " . __($guid, "by") . " " . $studentName[1] ;
                         }
                     }
                     $output .= "</span><br/><br/>" ;
-                    $output .= str_replace(' [&#8230;]', '...',strip_tags($item->description)) . " " . "<a target='_blank' href='" . $item->link . "'>" . __($guid, "Read on site") . "</a>" ;
-                    if ($item->comments!='') {
-                        $output .= " | <a target='_blank' href='" . $item->comments . "'>" . __($guid, "Leave A Comment") . "</a>" ;
+                    $output .= str_replace(' [&#8230;]', '...',strip_tags($item['description'])) . " " . "<a target='_blank' href='" . $item['link'] . "'>" . __($guid, "Read on site") . "</a>" ;
+                    if ($item['comments']!='') {
+                        $output .= " | <a target='_blank' href='" . $item['comments'] . "'>" . __($guid, "Leave A Comment") . "</a>" ;
                     }
                 $output .= "</p>" ;
                 $count++ ;
