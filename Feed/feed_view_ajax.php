@@ -173,15 +173,16 @@ else {
         $rollingCurlCount = 0;
         foreach ($rollingCurl->getCompletedRequests() as $request) {
             $rss = new DOMDocument();
-            $rss->loadXML($request->getResponseText());
-            foreach ($rss->getElementsByTagName('item') as $node) {
-                $entries[$rollingCurlCount]['title'] = $node->getElementsByTagName('title')->item(0)->nodeValue ;
-                $entries[$rollingCurlCount]['pubDate'] = $node->getElementsByTagName('pubDate')->item(0)->nodeValue ;
-                $entries[$rollingCurlCount]['description'] = $node->getElementsByTagName('description')->item(0)->nodeValue ;
-                $entries[$rollingCurlCount]['link'] = $node->getElementsByTagName('link')->item(0)->nodeValue ;
-                $entries[$rollingCurlCount]['comments'] = $node->getElementsByTagName('comments')->item(0)->nodeValue ;
+            if ($rss->loadXML($request->getResponseText()) != false ) {
+                foreach ($rss->getElementsByTagName('item') as $node) {
+                    $entries[$rollingCurlCount]['title'] = $node->getElementsByTagName('title')->item(0)->nodeValue ;
+                    $entries[$rollingCurlCount]['pubDate'] = $node->getElementsByTagName('pubDate')->item(0)->nodeValue ;
+                    $entries[$rollingCurlCount]['description'] = $node->getElementsByTagName('description')->item(0)->nodeValue ;
+                    $entries[$rollingCurlCount]['link'] = $node->getElementsByTagName('link')->item(0)->nodeValue ;
+                    $entries[$rollingCurlCount]['comments'] = $node->getElementsByTagName('comments')->item(0)->nodeValue ;
 
-                $rollingCurlCount ++;
+                    $rollingCurlCount ++;
+                }
             }
         }
 
