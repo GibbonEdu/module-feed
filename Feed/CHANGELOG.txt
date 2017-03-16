@@ -1,8 +1,12 @@
 CHANGELOG
 =========
+v1.0.03
+-------
+Fixed error log issue
+
 v1.0.02
 -------
-Fixed error log issue 
+Fixed error log issue
 
 v1.0.01
 -------

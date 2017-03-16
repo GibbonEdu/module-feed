@@ -25,7 +25,7 @@ $description = 'Offers a unified feed of latest posts from student and class web
 $entryURL = 'feed_view.php';
 $type = 'Additional';
 $category = 'Other';
-$version = '1.0.02';
+$version = '1.0.03';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
