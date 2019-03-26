@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.0.05
+-------
+Refactored breadcrumbs 
+Requires Gibbon v17.0.00
+
 v1.0.04
 -------
 Code cleanup 
