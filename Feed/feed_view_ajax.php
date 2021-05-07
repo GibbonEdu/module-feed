@@ -60,7 +60,7 @@ else {
             $sql = "SELECT gibbonPerson.website, surname, preferredName
                 FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)
                     AND gibbonPerson.status='Full'";
             $result = $connection2->prepare($sql);
@@ -80,10 +80,10 @@ else {
         //Class sites from my class(es)
         try {
             $data = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT gibbonRollGroup.website, gibbonRollGroup.name
-                FROM gibbonRollGroup
+            $sql = "SELECT gibbonFormGroup.website, gibbonFormGroup.name
+                FROM gibbonFormGroup
                 WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)
-                    AND gibbonRollGroup.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
+                    AND gibbonFormGroup.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
                 ";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -111,13 +111,13 @@ else {
     } else if ($category == "Parent") {
         try {
             $data = array('gibbonPersonIDParent' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDChild' => $gibbonPersonID);
-            $sql = "SELECT gibbonPerson.website AS websitePersonal, gibbonRollGroup.website AS websiteClass, preferredName, surname
+            $sql = "SELECT gibbonPerson.website AS websitePersonal, gibbonFormGroup.website AS websiteClass, preferredName, surname
                 FROM gibbonFamilyAdult
                     JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                     JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                     JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
-                    LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE childDataAccess='Y'
                     AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDParent
                     AND gibbonPerson.gibbonPersonID=:gibbonPersonIDChild
