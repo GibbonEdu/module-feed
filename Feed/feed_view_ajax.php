@@ -26,12 +26,9 @@ require_once './src/Library/RollingCurl/Request.php';
 
 $output = '';
 
-$category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+$category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
-$gibbonPersonID = null ;
-if (isset($_GET['gibbonPersonID'])) {
-    $gibbonPersonID = $_GET['gibbonPersonID'] ;
-}
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
 if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
     echo "<div class='error'>";
@@ -45,18 +42,18 @@ else {
     $namesCount = 0 ;
     if ($category == "Staff") {
         //My own site
-        if ($_SESSION[$guid]['website'] != '') {
-            if ($_SESSION[$guid]['website']!='') {
-                $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
+        if ($session->get('website') != '') {
+            if ($session->get('website')!='') {
+                $feeds[$feedCount] = $session->get('website') . '?feed=rss2' ;
                 $feedCount ++ ;
-                $names[$namesCount][0] = $_SESSION[$guid]['website'] ;
-                $names[$namesCount][1] = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student', false) ;
+                $names[$namesCount][0] = $session->get('website') ;
+                $names[$namesCount][1] = formatName('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
                 $namesCount ++ ;
             }
         }
         //Student sites from my class(es)
         try {
-            $data = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
             $sql = "SELECT gibbonPerson.website, surname, preferredName
                 FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
@@ -79,7 +76,7 @@ else {
 
         //Class sites from my class(es)
         try {
-            $data = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
             $sql = "SELECT gibbonFormGroup.website, gibbonFormGroup.name
                 FROM gibbonFormGroup
                 WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)
@@ -99,18 +96,18 @@ else {
         }
     } else if ($category == "Student") {
         //My own site
-        if ($_SESSION[$guid]['website'] != '') {
-            if ($_SESSION[$guid]['website']!='') {
-                $feeds[$feedCount] = $_SESSION[$guid]['website'] . '?feed=rss2' ;
+        if ($session->get('website') != '') {
+            if ($session->get('website')!='') {
+                $feeds[$feedCount] = $session->get('website') . '?feed=rss2' ;
                 $feedCount ++ ;
-                $names[$namesCount][0] = $_SESSION[$guid]['website'] ;
-                $names[$namesCount][1] = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student', false) ;
+                $names[$namesCount][0] = $session->get('website') ;
+                $names[$namesCount][1] = formatName('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
                 $namesCount ++ ;
             }
         }
     } else if ($category == "Parent") {
         try {
-            $data = array('gibbonPersonIDParent' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDChild' => $gibbonPersonID);
+            $data = array('gibbonPersonIDParent' => $session->get('gibbonPersonID'), 'gibbonPersonIDChild' => $gibbonPersonID);
             $sql = "SELECT gibbonPerson.website AS websitePersonal, gibbonFormGroup.website AS websiteClass, preferredName, surname
                 FROM gibbonFamilyAdult
                     JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
