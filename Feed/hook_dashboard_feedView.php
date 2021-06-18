@@ -23,7 +23,7 @@ $returnInt = null;
 $included = false;
 $includes = get_included_files();
 foreach ($includes as $include) {
-    if ($include == $_SESSION[$guid]['absolutePath'].'/modules/Feed/moduleFunctions.php') {
+    if ($include == $session->get('absolutePath').'/modules/Feed/moduleFunctions.php') {
         $included = true;
     }
 }
