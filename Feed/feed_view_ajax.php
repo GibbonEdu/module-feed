@@ -163,7 +163,7 @@ else {
         $rollingCurlCount = 0;
         foreach ($rollingCurl->getCompletedRequests() as $request) {
             $rss = new DOMDocument();
-            if ($request->getResponseText() != '' && $rss->loadXML($request->getResponseText()) != false ) {
+            if ($request->getResponseText() != '' && @$rss->loadXML($request->getResponseText()) != false ) {
                 foreach ($rss->getElementsByTagName('item') as $node) {
                     $entries[$rollingCurlCount]['title'] = $node->getElementsByTagName('title')->item(0)->nodeValue ;
                     $entries[$rollingCurlCount]['pubDate'] = $node->getElementsByTagName('pubDate')->item(0)->nodeValue ;
