@@ -19,9 +19,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function getFeed($connection2, $guid, $gibbonPersonID)
 {
+    global $session;
+    
     $output = '';
 
-    $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
     $output .= '<p>';
         if ($category == "Staff") {
             $output .= __($guid, 'Shown below is a list of the most recent 20 posts, drawn from your own website, and that of class and student websites for your form groups.') ;
@@ -34,12 +36,12 @@ function getFeed($connection2, $guid, $gibbonPersonID)
 
     $output .= '<script type=\'text/javascript\'>
         $(document).ready(function(){
-            $(\'#feedOuter-' . $gibbonPersonID . '\').load(\'' . $_SESSION[$guid]['absoluteURL'] . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '\')});
+            $(\'#feedOuter-' . $gibbonPersonID . '\').load(\'' . $session->get('absoluteURL') . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '\')});
     </script>' ;
 
     $output .= '<div id=\'feedOuter-' . $gibbonPersonID . '\' style=\'width: 100%\'>' ;
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-            $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
+            $output .= "<img style='margin: 10px 0 5px 0' src='".$session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
             $output .= __($guid, 'Loading');
         $output .= '</div>';
     $output .='</div>' ;
