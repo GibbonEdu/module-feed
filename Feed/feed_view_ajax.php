@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
@@ -47,7 +49,7 @@ else {
                 $feeds[$feedCount] = $session->get('website') . '?feed=rss2' ;
                 $feedCount ++ ;
                 $names[$namesCount][0] = $session->get('website') ;
-                $names[$namesCount][1] = formatName('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
+                $names[$namesCount][1] = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
                 $namesCount ++ ;
             }
         }
@@ -69,7 +71,7 @@ else {
                 $feeds[$feedCount] = $row['website'] . '?feed=rss2' ;
                 $feedCount ++ ;
                 $names[$namesCount][0] = $row['website'] ;
-                $names[$namesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
+                $names[$namesCount][1] = Format::name('', $row['preferredName'], $row['surname'], 'Student', false) ;
                 $namesCount ++ ;
             }
         }
@@ -101,7 +103,7 @@ else {
                 $feeds[$feedCount] = $session->get('website') . '?feed=rss2' ;
                 $feedCount ++ ;
                 $names[$namesCount][0] = $session->get('website') ;
-                $names[$namesCount][1] = formatName('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
+                $names[$namesCount][1] = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Student', false) ;
                 $namesCount ++ ;
             }
         }
@@ -139,7 +141,7 @@ else {
                 }
             }
             $names[$namesCount][0] = $row['websitePersonal'] ;
-            $names[$namesCount][1] = formatName('', $row['preferredName'], $row['surname'], 'Student', false) ;
+            $names[$namesCount][1] = Format::name('', $row['preferredName'], $row['surname'], 'Student', false) ;
             $namesCount ++ ;
         }
     }
