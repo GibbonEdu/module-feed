@@ -23,7 +23,7 @@ include './modules/'.$session->get('module').'/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Feed/feed_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -32,11 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Feed/feed_view.php') == fa
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) { echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         echo '<h2>';
-        echo __($guid, 'Feed');
+        echo __('Feed');
         echo '</h2>';
         echo getFeed($connection2, $guid, $gibbonPersonID);
     }
