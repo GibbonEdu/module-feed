@@ -34,7 +34,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
 if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
     echo "<div class='error'>";
-    echo __($guid, 'You have not specified one or more required parameters.');
+    echo __('You have not specified one or more required parameters.');
     echo '</div>';
 }
 else {
@@ -148,7 +148,7 @@ else {
 
     if ($feedCount==0) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     }
     else {
@@ -187,7 +187,7 @@ else {
 
         if (count($entries)<1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         }
         else {
@@ -198,13 +198,13 @@ else {
                     $output .= '<span class=\'small emphasis\'>' . substr($item['pubDate'], 0, 17) ;
                     foreach ($names as $studentName) {
                         if (strpos($item['link'], $studentName[0]) !== false) {
-                            $output .=  " | " . __($guid, "by") . " " . $studentName[1] ;
+                            $output .=  " | " . __("by") . " " . $studentName[1] ;
                         }
                     }
                     $output .= "</span><br/><br/>" ;
-                    $output .= str_replace(' [&#8230;]', '...',strip_tags($item['description'])) . " " . "<a target='_blank' href='" . $item['link'] . "'>" . __($guid, "Read on site") . "</a>" ;
+                    $output .= str_replace(' [&#8230;]', '...',strip_tags($item['description'])) . " " . "<a target='_blank' href='" . $item['link'] . "'>" . __("Read on site") . "</a>" ;
                     if ($item['comments']!='') {
-                        $output .= " | <a target='_blank' href='" . $item['comments'] . "'>" . __($guid, "Leave A Comment") . "</a>" ;
+                        $output .= " | <a target='_blank' href='" . $item['comments'] . "'>" . __("Leave A Comment") . "</a>" ;
                     }
                 $output .= "</p>" ;
                 $count++ ;
