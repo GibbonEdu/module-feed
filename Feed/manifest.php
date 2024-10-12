@@ -27,7 +27,7 @@ $description = 'Offers a unified feed of latest posts from student and class web
 $entryURL = 'feed_view.php';
 $type = 'Additional';
 $category = 'Other';
-$version = '1.2.00';
+$version = '1.2.01';
 $author = "Gibbon Foundation";
 $url = "https://gibbonedu.org";
 
