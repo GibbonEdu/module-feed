@@ -29,9 +29,7 @@ require_once './src/Library/RollingCurl/RollingCurl.php';
 require_once './src/Library/RollingCurl/Request.php';
 
 $output = '';
-
-$category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
-
+$category = $session->get('gibbonRoleIDCurrentCategory');
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
 if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
