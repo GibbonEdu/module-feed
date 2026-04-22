@@ -33,9 +33,7 @@ $category = $session->get('gibbonRoleIDCurrentCategory');
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
 if (is_null($gibbonPersonID) or $gibbonPersonID=='') {
-    echo "<div class='error'>";
-    echo __('You have not specified one or more required parameters.');
-    echo '</div>';
+    echo Format::alert(__('You have not specified one or more required parameters.'), 'error');
 }
 else {
     $feeds = array();
@@ -147,9 +145,7 @@ else {
     }
 
     if ($feedCount==0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
+        echo Format::alert(__('There are no records to display.'), 'error');
     }
     else {
         $entries = array();
@@ -186,9 +182,7 @@ else {
         $entries=array_slice($entries, 0, 20) ;
 
         if (count($entries)<1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
+            echo Format::alert(__('There are no records to display.'), 'error');
         }
         else {
         $count = 0;

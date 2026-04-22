@@ -37,8 +37,14 @@ function getFeed($connection2, $guid, $gibbonPersonID)
     $output .= '</p>';
 
     $output .= '<script type=\'text/javascript\'>
-        $(document).ready(function(){
-            $(\'#feedOuter-' . $gibbonPersonID . '\').load(\'' . $session->get('absoluteURL') . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '\')});
+        document.addEventListener("DOMContentLoaded", function(){
+            var el = document.getElementById("feedOuter-' . $gibbonPersonID . '");
+            if (el) {
+                fetch("' . $session->get('absoluteURL') . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '")
+                    .then(function(r){ return r.text(); })
+                    .then(function(html){ el.innerHTML = html; });
+            }
+        });
     </script>' ;
 
     $output .= '<div id=\'feedOuter-' . $gibbonPersonID . '\' style=\'width: 100%\'>' ;
