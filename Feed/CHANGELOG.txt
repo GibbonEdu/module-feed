@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.3.00
+-------
+Resolve the error with getFeed() on Dashboard
+
 v1.2.02
 -------
 Fixed JS bug introduced in ownership transfer
