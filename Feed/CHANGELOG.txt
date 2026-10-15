@@ -1,8 +1,11 @@
 CHANGELOG
 =========
+v1.3.01
+-------
+Load feed functions once on the feed page so getFeed() is not declared twice
+
 v1.3.00
 -------
-Resolve the error with getFeed() on Dashboard
 Replaced the deprecated getRoleCategory() method
 
 v1.2.02

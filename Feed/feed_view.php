@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 
 // Module includes
-include_once __DIR__.'/moduleFunctions.php';
+require_once __DIR__.'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Feed/feed_view.php') == false) {
     //Acess denied
