@@ -3,6 +3,7 @@ CHANGELOG
 v1.3.00
 -------
 Resolve the error with getFeed() on Dashboard
+Replaced the deprecated getRoleCategory() method
 
 v1.2.02
 -------

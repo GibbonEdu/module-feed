@@ -24,8 +24,8 @@ function getFeed($connection2, $guid, $gibbonPersonID)
     global $session;
     
     $output = '';
-
-    $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+    
+    $category = $session->get('gibbonRoleIDCurrentCategory');
     $output .= '<p>';
         if ($category == "Staff") {
             $output .= __('Shown below is a list of the most recent 20 posts, drawn from your own website, and that of class and student websites for your form groups.') ;
@@ -37,8 +37,14 @@ function getFeed($connection2, $guid, $gibbonPersonID)
     $output .= '</p>';
 
     $output .= '<script type=\'text/javascript\'>
-        $(document).ready(function(){
-            $(\'#feedOuter-' . $gibbonPersonID . '\').load(\'' . $session->get('absoluteURL') . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '\')});
+        document.addEventListener("DOMContentLoaded", function(){
+            var el = document.getElementById("feedOuter-' . $gibbonPersonID . '");
+            if (el) {
+                fetch("' . $session->get('absoluteURL') . '/modules/Feed/feed_view_ajax.php?gibbonPersonID=' .  $gibbonPersonID . '")
+                    .then(function(r){ return r.text(); })
+                    .then(function(html){ el.innerHTML = html; });
+            }
+        });
     </script>' ;
 
     $output .= '<div id=\'feedOuter-' . $gibbonPersonID . '\' style=\'width: 100%\'>' ;
