@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 
 $returnInt = null;
 
-//Only include module include if it is not already included (which it may be been on the index page)
+//Only include module include if it is not already
 require_once $session->get('absolutePath').'/modules/Feed/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Feed/feed_view.php') == false) {

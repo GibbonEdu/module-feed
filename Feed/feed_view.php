@@ -21,17 +21,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 
-//Module includes
-include './modules/'.$session->get('module').'/moduleFunctions.php';
+// Module includes
+require_once __DIR__.'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Feed/feed_view.php') == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed!
+    // Proceed!
     $page->breadcrumbs->add(__('View Feed'));
 
-    //Get action with highest precendence
+    // Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) { echo Format::alert(__('The highest grouped action cannot be determined.'), 'error');
     } else {

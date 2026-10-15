@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.3.01
+-------
+Load feed functions once on the feed page so getFeed() is not declared twice
+
 v1.3.00
 -------
 Replaced the deprecated getRoleCategory() method
